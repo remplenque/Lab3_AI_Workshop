@@ -1,0 +1,16 @@
+# Expectation for one additional candidate
+
+The five base results are supplied. This expectation concerns YOUR additional run.
+
+- Base model: `tree` (the supplied DecisionTreeClassifier pipeline: max_depth 3, min_samples_leaf 50, class_weight balanced, seed 414).
+- Parameter and old → new value (one allowed tuple): `max_depth` 3 → 6, i.e. `tree / max_depth / 6`.
+- Conditions held fixed: same CSV (hash checked by `load_learning`), train 2018–2021 and dev = first 11 rounds of 2022, the nine `FEATURES`, the same preprocessing fitted on train only, seed 414, min_samples_leaf 50 and class_weight balanced. Same threshold policy as every other system: at most 945 dev alerts (10%), maximise distinct entries caught, then precision, then threshold; the dev threshold is reused unchanged on train. `run_one_change` clones the parent and checks that `max_depth` is the only model parameter that changes. The threshold is re-selected for the candidate under that same rule, so its numeric value can be different from the parent's 0.714.
+- Have you already run this additional candidate? **No.** Written on 26 Oct 2026 before the first run of `tree max_depth 6`. Before writing it we had only seen the five supplied base results and looked at the parent tree itself (its splits and its dev score blocks, check cells in sections 2 and 3).
+- Expected effect and mechanism, written before the first additional run if it has not happened:
+  The parent has depth 3, so at most 8 leaves and only 8 possible scores. On dev its top two leaves give 571 alerts and the next leaf would take it to 1898, over the 945 cap, so it only uses 571 of the 945 alerts and catches 63/370 entries. With depth 6 (up to 64 leaves, each still with at least 50 train windows) we expect two things: (1) much finer score steps, so the threshold can get close to the 945 cap, and (2) extra splits that can capture combinations the depth-3 tree can't, for example tyre age after the first stop together with compound or circuit (the parent does not use compound at all).
+  Our guess: dev entries caught go up from 63/370 to roughly 85–115/370, alerts end up near 945, and precision stays about the same or a bit higher (around 0.27–0.32). We expect it to stay below forest_sqrt (140/370), because one deeper tree is still a single, high-variance model and the forests average 150 trees.
+  Risks: more depth means more chance of fitting 2018–2021 specifics, so we expect train event recall to rise more than dev and the train/dev gap to be larger than the parent's (0.336 train vs 0.170 dev). Also, part of any dev gain could come only from using more of the alert budget and not from better ranking. If entries caught rise but precision falls, we will read it as mostly a budget effect.
+- Other trials already made, if any, and how the final candidate was chosen: none. We picked this tuple because the tree is the weakest learned base model and the tie problem is visible in the supplied output (571 alerts with a 945 budget). We have not run `forest_sqrt / max_depth / 3` or `forest_sqrt / min_samples_leaf / 100` and will not run them.
+
+Keep this record after running, even if wrong. Explain actual results in “4. Explain your additional result”.
+Do not rewrite an expectation as if it predicted a result already seen.
