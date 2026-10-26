@@ -19,9 +19,10 @@ Steps we used, from the extracted folder (all paths relative, no downloads):
 3. Restart the kernel and Run All (about one minute). The additional candidate is set in the `extra-config` cell: `tree / max_depth / 6`.
 4. Check the last code cell prints `Additional experiment executed: True` and `Systems: 6 | train/dev rows: 12`. It rewrites `comparison_table.md` and the five files in `outputs/`.
 
-Same run without the editor (equivalent to Restart + Run All):
+Same run without the editor (equivalent to Restart + Run All), from a terminal in the folder with the Anaconda environment active:
 
 ```text
+conda activate base
 jupyter nbconvert --to notebook --execute --inplace Lab03_ModelComparison_Student_v3.ipynb
 ```
 
@@ -82,4 +83,3 @@ The repository includes the executed notebook, supplied support/data files, comp
 Check `CHECKLIST.md`. Do not commit your `.venv`, credentials or unrelated personal files.
 
 One additional configuration may be rerun for reproducibility. In section 5, set a context/error query and, when needed, an event query; these only inspect frozen predictions and do not fit a model. Use the denominator dictionary and fictional examples there.
-# Lab3_AI_Workshop
